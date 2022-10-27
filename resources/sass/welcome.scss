@@ -1,0 +1,13 @@
+.welcome-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    & .content {
+        width: 100%;
+        box-shadow: 2px 2px 8px -4px var(--bs-dark);
+        padding: 16px;
+        border-radius: 8px;
+    }
+}

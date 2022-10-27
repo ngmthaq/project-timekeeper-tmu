@@ -1,0 +1,44 @@
+@import "./mixins";
+@import "./variables";
+@import "./welcome.scss";
+
+html .v-application p,
+html .v-application h1,
+html .v-application h2,
+html .v-application h3,
+html .v-application h4,
+html .v-application h5,
+html .v-application h6,
+html .v-application blockquote,
+html .v-application body,
+html .v-application ol,
+html .v-application ul {
+    padding: 0;
+    margin: 0;
+}
+
+label.required {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        top: 0;
+        right: -8px;
+        color: red;
+        content: "*";
+    }
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    box-shadow: 0 0 0 30px white inset !important;
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+}

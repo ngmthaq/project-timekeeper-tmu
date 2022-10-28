@@ -1,32 +1,39 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-import VueMeta from 'vue-meta';
-import Login from '../pages/Login.vue';
-import { $t } from '../helpers';
+import Vue from "vue";
+import VueRouter from "vue-router";
+import VueMeta from "vue-meta";
+import Login from "../pages/Login.vue";
+import DayOffManage from "../pages/DayOffManage.vue";
+import { $t } from "../helpers";
 
 Vue.use(VueRouter);
 Vue.use(VueMeta);
 
 const routes = [
-  {
-    path: '/',
-    name: 'Login',
-    component: Login,
-    meta: { title: 'common.title.login' }
-  },
-]
+    {
+        path: "/",
+        name: "Login",
+        component: Login,
+        meta: { title: "common.title.login" },
+    },
+    {
+        path: "/manage/day/off",
+        name: "DayOff",
+        component: DayOffManage,
+        meta: { title: "Quản lý nghỉ phép" },
+    },
+];
 
 const router = new VueRouter({
-  mode: 'history',
-  routes
-})
+    mode: "history",
+    routes,
+});
 
 router.afterEach((to, from) => {
-  Vue.nextTick(() => {
-    if (to.meta.title) {
-      document.title = ($t(to.meta.title) + process.env.MIX_TITLE_TEMPLATE);
-    }
-  });
+    Vue.nextTick(() => {
+        if (to.meta.title) {
+            document.title = $t(to.meta.title) + process.env.MIX_TITLE_TEMPLATE;
+        }
+    });
 });
 
 export default router;

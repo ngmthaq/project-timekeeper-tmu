@@ -17,6 +17,10 @@ html .v-application ul {
     margin: 0;
 }
 
+body::-webkit-scrollbar {
+    width: 0;
+}
+
 label.required {
     position: relative;
 

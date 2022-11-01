@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import VueMeta from "vue-meta";
 import Login from "../pages/Login.vue";
 import DayOffManage from "../pages/DayOffManage.vue";
+import DayOff from "../pages/DayOff.vue";
 import { $t } from "../helpers";
 
 Vue.use(VueRouter);
@@ -20,6 +21,12 @@ const routes = [
         name: "DayOff",
         component: DayOffManage,
         meta: { title: "Quản lý nghỉ phép" },
+    },
+    {
+        path: "/day/off",
+        name: "DayOff",
+        component: DayOff,
+        meta: { title: "Xin nghỉ phép" },
     },
 ];
 

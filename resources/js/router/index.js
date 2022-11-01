@@ -3,7 +3,8 @@ import VueRouter from "vue-router";
 import VueMeta from "vue-meta";
 import Login from "../pages/Login.vue";
 import DayOffManage from "../pages/DayOffManage.vue";
-import Timekeeper from "../pages/Timekeeper.vue"
+import Timekeeper from "../pages/Timekeeper.vue";
+import DayOff from "../pages/DayOff.vue";
 import { $t } from "../helpers";
 
 Vue.use(VueRouter);
@@ -23,11 +24,17 @@ const routes = [
         meta: { title: "Quản lý nghỉ phép" },
     },
     {
-      path: "/timekeeper",
-      name: "Timekeeper",
-      component: Timekeeper,
-      meta: { title: "Chấm công" },
-  },
+        path: "/timekeeper",
+        name: "Timekeeper",
+        component: Timekeeper,
+        meta: { title: "Chấm công" },
+    },
+    {
+        path: "/day/off",
+        name: "DayOff",
+        component: DayOff,
+        meta: { title: "Xin nghỉ phép" },
+    },
 ];
 
 const router = new VueRouter({

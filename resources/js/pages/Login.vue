@@ -5,18 +5,19 @@
         <div class="cont-wrap-bg">
           <img src="/image/login_bg.png" alt="Login Background" />
         </div>
-        <form>
+        <form @submit.prevent="login">
           <div class="form-row">
             <h1 class="form-title">Đăng nhập</h1>
           </div>
           <div class="form-row">
-            <label for="email" class="required">Email</label>
+            <label for="username" class="required">Tài khoản</label>
             <input
               type="text"
-              id="email"
-              placeholder="Vui lòng nhập email của bạn"
+              id="username"
+              placeholder="Vui lòng nhập tài khoản của bạn"
+              v-model="credentials.username"
             />
-            <span class="error-msg"></span>
+            <span class="error-msg"> {{ errors.username }} </span>
           </div>
           <div class="form-row">
             <label for="password" class="required">Mật khẩu</label>
@@ -24,11 +25,12 @@
               type="password"
               id="password"
               placeholder="Vui lòng nhập mật khẩu của bạn"
+              v-model="credentials.password"
             />
-            <span class="error-msg"></span>
+            <span class="error-msg"> {{ errors.password }} </span>
           </div>
           <div class="form-row">
-            <button type="button">Đăng nhập</button>
+            <button type="submit">Đăng nhập</button>
           </div>
         </form>
       </div>
@@ -37,10 +39,46 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      credentials: {
+        username: "",
+        password: "",
+      },
+      errors: {
+        username: "",
+        password: "",
+      },
+    };
+  },
+
+  methods: {
+    async login() {
+      let res = await this.$store.dispatch("auth/login", this.credentials);
+
+      this.errors = { username: "", password: "" };
+
+      if (res.status === 200) {
+        this.$router.push({ name: "Timekeeper" });
+      } else if (res.status === 401) {
+        this.errors.username = res.data.message;
+      } else if (res.status === 422) {
+        if (res.data.errors.username) {
+          this.errors.username = res?.data?.errors?.username[0];
+        }
+
+        if (res.data.errors.password) {
+          this.errors.password =
+            res?.data?.errors?.password[0] ?? res.data.message;
+        }
+      }
+    },
+  },
+};
 </script>
 
-
+<style lang="scss" scoped>
 form {
   flex: 1;
 

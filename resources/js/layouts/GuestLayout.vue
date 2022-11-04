@@ -5,12 +5,16 @@
 </template>
 
 <script>
+import localStorageData from "../configs/localStorage";
+
 export default {
   name: "GuestLayout",
 
   created() {
-    console.log(this);
-  }
+    if (localStorage.getItem(localStorageData.key.auth)) {
+      this.$router.push({ name: "Timekeeper" });
+    }
+  },
 };
 </script>
 

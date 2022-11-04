@@ -20,7 +20,9 @@
         </div>
         <div class="user">
           <p class="name">Nguyễn Mạnh Thắng</p>
-          <button class="logout"><v-icon>mdi-logout-variant</v-icon></button>
+          <button @click="logout" class="logout">
+            <v-icon>mdi-logout-variant</v-icon>
+          </button>
         </div>
       </nav>
       <div class="auth-body">
@@ -34,6 +36,7 @@
 
 <script>
 import paths from "../configs/path";
+import localStorageData from "../configs/localStorage";
 
 export default {
   name: "AuthLayout",
@@ -44,8 +47,17 @@ export default {
     };
   },
 
+  methods: {
+    async logout() {
+      await this.$store.dispatch("auth/logout");
+      this.$router.push({ name: "Login" });
+    },
+  },
+
   created() {
-    console.log(this.$route);
+    if (!localStorage.getItem(localStorageData.key.auth)) {
+      this.$router.push({ name: "Login" });
+    }
   },
 };
 </script>
@@ -119,7 +131,7 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all .2s ease-in-out;
+      transition: all 0.2s ease-in-out;
 
       & .v-icon {
         font-size: 18px;

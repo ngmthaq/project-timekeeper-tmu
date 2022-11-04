@@ -1,39 +1,41 @@
-import { getLocale } from '../helpers';
+import { getLocale } from "../helpers";
 
-const axios = require('axios');
+const axios = require("axios");
 
-export class DefaultApi {
+export default class DefaultApi {
     constructor() {
         // Get language
         this.lang = getLocale();
 
         // Get timezone of browser
-        this.tz = Intl.DateTimeFormat().resolvedOptions().timeZone === 'Asia/Saigon'
-            ? 'Asia/Ho_Chi_Minh'
-            : Intl.DateTimeFormat().resolvedOptions().timeZone;
+        this.tz =
+            Intl.DateTimeFormat().resolvedOptions().timeZone === "Asia/Saigon"
+                ? "Asia/Ho_Chi_Minh"
+                : Intl.DateTimeFormat().resolvedOptions().timeZone;
 
         // Make an instant of axios
         this.api = axios.create();
 
         // Config axios default headers
-        this.api.defaults.headers.common['Timezone'] = this.tz;
-        this.api.defaults.headers.common['App-Language'] = this.lang;
-        this.api.defaults.headers.common['Cache-Control'] = 'no-cache';
-        this.api.defaults.headers.common['Cache-control'] = 'no-store';
-        this.api.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-        this.api.defaults.headers.common['Pragma'] = 'no-cache';
-        this.api.defaults.headers.common['X-Request-With'] = 'XMLHttpRequest';
+        this.api.defaults.baseURL = process.env.MIX_BASE_URL;
+        this.api.defaults.headers.common["Timezone"] = this.tz;
+        this.api.defaults.headers.common["App-Language"] = this.lang;
+        this.api.defaults.headers.common["Cache-Control"] = "no-cache";
+        this.api.defaults.headers.common["Cache-control"] = "no-store";
+        this.api.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+        this.api.defaults.headers.common["Pragma"] = "no-cache";
+        this.api.defaults.headers.common["X-Request-With"] = "XMLHttpRequest";
 
         // Config axios request interceptor
         this.api.interceptors.request.use(
-            config => this.onRequestSuccess(config), // Do sonething before request sent
-            error => this.onRequestError(error) // Do something with request error
+            (config) => this.onRequestSuccess(config), // Do sonething before request sent
+            (error) => this.onRequestError(error) // Do something with request error
         );
 
         // Config axios response interceptor
         this.api.interceptors.response.use(
-            response => this.onResponseSuccess(response), // Do something when response in 2xx status
-            error => this.onResponseError(error) // Do something when response got error
+            (response) => this.onResponseSuccess(response), // Do something when response in 2xx status
+            (error) => this.onResponseError(error) // Do something when response got error
         );
     }
 
@@ -59,27 +61,34 @@ export class DefaultApi {
 
     // config general api request
     async _request(method, url, params, data, headers = {}, config = {}) {
-        return await this.api.request({ ...config, url, params, data, method: method.toLowerCase(), headers });
+        return await this.api.request({
+            ...config,
+            url,
+            params,
+            data,
+            method: method.toLowerCase(),
+            headers,
+        });
     }
 
     // config get request
     async _get(url, params = {}, headers = {}, config = {}) {
-        return await this._request('get', url, params, {}, headers, config);
+        return await this._request("get", url, params, {}, headers, config);
     }
 
     // config post request
     async _post(url, data = {}, headers = {}, config = {}) {
-        return await this._request('get', url, {}, data, headers, config);
+        return await this._request("post", url, {}, data, headers, config);
     }
 
     // config put request
     async _put(url, data, headers = {}, config = {}) {
-        return await this._request('put', url, {}, data, headers, config);
+        return await this._request("put", url, {}, data, headers, config);
     }
 
     // config delete request
     async _delete(url, data = {}, headers = {}, config = {}) {
-        return await this._request('delete', url, {}, data, headers, config);
+        return await this._request("delete", url, {}, data, headers, config);
     }
 
     async get(url, params = {}, headers = {}) {
@@ -131,4 +140,4 @@ export class DefaultApi {
             return e;
         }
     }
-};
+}

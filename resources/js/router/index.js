@@ -33,7 +33,7 @@ const routes = [
         path: "/day/off",
         name: "DayOff",
         component: DayOff,
-        meta: { title: "Xin nghỉ phép" },
+        meta: { title: "Đuyệt nghỉ phép" },
     },
 ];
 

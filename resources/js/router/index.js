@@ -19,7 +19,7 @@ const routes = [
     },
     {
         path: "/manage/day/off",
-        name: "DayOff",
+        name: "DayOffManage",
         component: DayOffManage,
         meta: { title: "Quản lý nghỉ phép" },
     },
@@ -33,7 +33,7 @@ const routes = [
         path: "/day/off",
         name: "DayOff",
         component: DayOff,
-        meta: { title: "Xin nghỉ phép" },
+        meta: { title: "Duyệt nghỉ phép" },
     },
 ];
 

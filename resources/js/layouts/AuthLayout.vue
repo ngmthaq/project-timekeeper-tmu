@@ -19,7 +19,7 @@
           <button class="checkout">Checkout</button>
         </div>
         <div class="user">
-          <p class="name">Nguyễn Mạnh Thắng</p>
+          <p class="name">{{ user }}</p>
           <button @click="logout" class="logout">
             <v-icon>mdi-logout-variant</v-icon>
           </button>
@@ -44,6 +44,7 @@ export default {
   data() {
     return {
       paths: paths,
+      user: "",
     };
   },
 
@@ -54,9 +55,23 @@ export default {
     },
   },
 
-  created() {
+  async created() {
     if (!localStorage.getItem(localStorageData.key.auth)) {
       this.$router.push({ name: "Login" });
+    } else {
+      let name = this.$store.state.auth?.user?.name;
+      if (name) {
+        this.user = name;
+      } else {
+        let res = await this.$store.dispatch("auth/user");
+        if (res.status === 200) {
+          this.user = res.data.name;
+        } else {
+          alert("Có lỗi đã xảy ra vui lòng đăng nhập lại");
+          localStorage.removeItem(localStorageData.key.auth);
+          location.reload();
+        }
+      }
     }
   },
 };

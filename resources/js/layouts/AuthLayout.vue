@@ -15,8 +15,8 @@
     <div class="auth-main">
       <nav class="navbar">
         <div class="button_cont">
-          <button class="checkin">Checkin</button>
-          <button class="checkout">Checkout</button>
+          <button class="checkin" @click="checkin">Checkin</button>
+          <button class="checkout" @click="checkout">Checkout</button>
         </div>
         <div class="user">
           <p class="name">{{ user }}</p>
@@ -52,6 +52,34 @@ export default {
     async logout() {
       await this.$store.dispatch("auth/logout");
       this.$router.push({ name: "Login" });
+    },
+
+    async checkin() {
+      let res = await this.$store.dispatch("timekeeper/checkin");
+
+      if (res.status === 200) {
+        alert("Bạn đã checkin thành công");
+        location.reload();
+      } else if (res.status === 422) {
+        alert("Bạn đã checkin ngày hôm nay");
+      } else {
+        alert("Đã xảy ra lỗi, vui lòng thử lại");
+        location.reload();
+      }
+    },
+
+    async checkout() {
+      let res = await this.$store.dispatch("timekeeper/checkout");
+
+      if (res.status === 200) {
+        alert("Bạn đã checkout thành công");
+        location.reload();
+      } else if (res.status === 422) {
+        alert(res.data.message);
+      } else {
+        alert("Đã xảy ra lỗi, vui lòng thử lại");
+        location.reload();
+      }
     },
   },
 

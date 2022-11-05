@@ -153,6 +153,10 @@ export default {
       this.$emit("changeMonth", prev);
     },
   },
+
+  created() {
+    this.$emit("initial", today);
+  },
 };
 </script>
 

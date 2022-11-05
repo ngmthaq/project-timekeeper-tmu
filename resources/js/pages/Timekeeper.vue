@@ -4,11 +4,16 @@
       <h2>Bảng chấm công</h2>
       <p>Số ngày công: 11/21</p>
     </div>
-    <calendar :data="calendarData"></calendar>
+    <calendar
+      :data="calendarData"
+      @initial="getData"
+      @changeMonth="getData"
+    ></calendar>
   </auth-layout>
 </template>
 
 <script>
+import moment from "moment";
 import { Calendar } from "../components";
 
 export default {
@@ -18,25 +23,26 @@ export default {
 
   data() {
     return {
-      calendarData: [
-        {
-          checkin: "07:30",
-          checkinColor: "#28a745",
-          checkout: "15:30",
-          checkoutColor: "#dc3545",
-          date: "31/10/2022",
-          off: 0,
-        },
-        {
-          checkin: "07:30",
-          checkinColor: "#28a745",
-          checkout: "17:30",
-          checkoutColor: "#28a745",
-          date: "01/11/2022",
-          off: 0,
-        },
-      ],
+      calendarData: [],
     };
+  },
+
+  methods: {
+    async getData(data) {
+      let date = data.clone().format("YYYY-MM-DD");
+      let res = await this.$store.dispatch("timekeeper/getCheckinData", {
+        date: date,
+      });
+
+      if (res.status === 200) {
+        this.calendarData = res.data.map((date) => ({
+          ...date,
+          date: moment(date.date).format("DD/MM/YYYY"),
+        }));
+      } else {
+        alert("Đã xảy ra lỗi");
+      }
+    },
   },
 };
 </script>

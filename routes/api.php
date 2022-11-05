@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Main\CheckinController;
+use App\Http\Controllers\Main\LeaveController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,4 +25,6 @@ Route::middleware("auth:sanctum")->name("api.")->group(function () {
     Route::post('checkin', [CheckinController::class, 'checkin'])->name('checkin');
     Route::post('checkout', [CheckinController::class, 'checkout'])->name('checkout');
     Route::get('checkin/get', [CheckinController::class, 'getData'])->name('getCheckinData');
+    Route::post("day/off", [LeaveController::class, "handleDayOff"])->name("handleDayOff");
+    Route::get("day/off/get", [LeaveController::class, "getDayOff"])->name("getDayOff");
 });

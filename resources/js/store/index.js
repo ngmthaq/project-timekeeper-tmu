@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import locale from "./modules/locale";
 import auth from "./modules/auth";
 import timekeeper from "./modules/timekeeper";
+import dayoff from "./modules/dayoff";
 
 Vue.use(Vuex);
 
@@ -15,5 +16,6 @@ export default new Vuex.Store({
         locale,
         auth,
         timekeeper,
+        dayoff,
     },
 });

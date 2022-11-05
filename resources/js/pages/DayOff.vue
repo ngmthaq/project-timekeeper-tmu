@@ -3,7 +3,7 @@
         <v-sheet class="box_title">
             <h3>Danh sách ngày nghỉ phép</h3>
             <div style="display: flex;">
-                <input type="month" id="selectMonth" v-model="month" class="selectMonth">
+                <input type="month" id="selectMonth" v-model="monthYear" class="selectMonth" @change="getData">
                 <c-dialog title="Đơn xin nghỉ phép" icon="mdi-plus-circle-outline">
                 </c-dialog>
             </div>
@@ -22,6 +22,7 @@
 <script>
 
 import { Dialog } from "../components";
+import {convertLeaveShift, convertLeaveStatus} from "../filters";
 
 export default {
     components: {
@@ -34,163 +35,36 @@ export default {
                     text: 'Ngày nghỉ',
                     align: 'start',
                     sortable: false,
-                    value: 'day_off',
+                    value: 'date',
                 },
-                { text: 'Thời gian', value: 'time' },
                 { text: 'Lý  do', value: 'reason' },
-                { text: 'Trạng thái', value: 'status' },
-                { text: 'Người duyệt', value: 'approver' },
+                { text: 'Ca nghỉ', value: 'shifts' },
+                { text: 'Trạng thái', value: 'status' }
             ],
-            desserts: [
-                {
-                    day_off: 159,
-                    time: '22-02-2022',
-                    reason: 6.0,
-                    status: 24,
-                    approver: 4.0,
-                },
-                {
-                    day_off: 237,
-                    time: '22-02-2022',
-                    reason: 9.0,
-                    status: 37,
-                    approver: 4.3,
-                },
-                {
-                    day_off: 262,
-                    time: '22-02-2022',
-                    reason: 16.0,
-                    status: 23,
-                    approver: 6.0,
-                },
-                {
-                    day_off: 305,
-                    time: '22-02-2022',
-                    reason: 3.7,
-                    status: 67,
-                    approver: 4.3,
-                },
-                {
-                    day_off: 356,
-                    time: '22-02-2022',
-                    reason: 16.0,
-                    status: 49,
-                    approver: 3.9,
-                },
-                {
-                    day_off: 375,
-                    time: '22-02-2022',
-                    reason: 0.0,
-                    status: 94,
-                    approver: 0.0,
-                },
-                {
-                    day_off: 392,
-                    time: '22-02-2022',
-                    reason: 0.2,
-                    status: 98,
-                    approver: 0,
-                },
-                {
-                    day_off: 408,
-                    time: '22-02-2022',
-                    reason: 3.2,
-                    status: 87,
-                    approver: 6.5,
-                },
-                {
-                    day_off: 452,
-                    time: '22-02-2022',
-                    reason: 25.0,
-                    status: 51,
-                    approver: 4.9,
-                },
-                {
-                    day_off: 518,
-                    time: '22-02-2022',
-                    reason: 26.0,
-                    status: 65,
-                    approver: 7,
-                },
-                {
-                    day_off: 159,
-                    time: '22-02-2022',
-                    reason: 6.0,
-                    status: 24,
-                    approver: 4.0,
-                },
-                {
-                    day_off: 237,
-                    time: '22-02-2022',
-                    reason: 9.0,
-                    status: 37,
-                    approver: 4.3,
-                },
-                {
-                    day_off: 262,
-                    time: '22-02-2022',
-                    reason: 16.0,
-                    status: 23,
-                    approver: 6.0,
-                },
-                {
-                    day_off: 305,
-                    time: '22-02-2022',
-                    reason: 3.7,
-                    status: 67,
-                    approver: 4.3,
-                },
-                {
-                    day_off: 356,
-                    time: '22-02-2022',
-                    reason: 16.0,
-                    status: 49,
-                    approver: 3.9,
-                },
-                {
-                    day_off: 375,
-                    time: '22-02-2022',
-                    reason: 0.0,
-                    status: 94,
-                    approver: 0.0,
-                },
-                {
-                    day_off: 392,
-                    time: '22-02-2022',
-                    reason: 0.2,
-                    status: 98,
-                    approver: 0,
-                },
-                {
-                    day_off: 408,
-                    time: '22-02-2022',
-                    reason: 3.2,
-                    status: 87,
-                    approver: 6.5,
-                },
-                {
-                    day_off: 452,
-                    time: '22-02-2022',
-                    reason: 25.0,
-                    status: 51,
-                    approver: 4.9,
-                },
-                {
-                    day_off: 518,
-                    time: '22-02-2022',
-                    reason: 26.0,
-                    status: 65,
-                    approver: 7,
-                },
-            ],
-            month: new Date().toISOString().slice(0, 7),
+            desserts: [],
+            monthYear: new Date().toISOString().slice(0, 7),
         };
     },
-    methods: {
-        clickOpenDialog() {
-            console.log("xin nghỉ nè");
 
-        },
+    async created() {
+        await this.getData();
+    },
+
+    methods: {
+        async getData() {
+            let res = await this.$store.dispatch("dayoff/getDayOff", {
+                'month': this.monthYear.slice(5,7),
+                'year': this.monthYear.slice(0,4),
+            });
+            console.log(res.data.response)
+            if (res && res.status === 200) {
+                this.desserts = res.data.response.map((item) => ({
+                    ...item,
+                    status: this.$options.filters.convertLeaveStatus(item.status),
+                    shifts: this.$options.filters.convertLeaveShift(item.shifts),
+                }));
+            }
+        }
     }
 };
 </script>

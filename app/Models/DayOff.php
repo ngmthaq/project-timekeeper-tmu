@@ -12,6 +12,7 @@ class DayOff extends Model
     protected $fillable = [
         'shifts',
         'date',
+        'reason',
     ];
 
     public function user()

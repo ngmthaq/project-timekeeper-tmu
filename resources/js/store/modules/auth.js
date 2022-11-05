@@ -1,8 +1,10 @@
 import localStorageData from "../../configs/localStorage";
 import DefaultApi from "../../api/default";
 import apiConst from "../../configs/api";
+import AuthApi from "../../api/auth";
 
 const api = new DefaultApi();
+const authApi = new AuthApi();
 const authKey = localStorageData.key.auth;
 const accessToken = localStorage.getItem(authKey) ?? "";
 
@@ -11,6 +13,7 @@ export default {
 
     state: () => ({
         accessToken: accessToken,
+        user: null,
     }),
 
     mutations: {
@@ -18,6 +21,10 @@ export default {
             state.accessToken = payload.accessToken;
             localStorage.setItem(authKey, payload.accessToken);
         },
+
+        SET_USER(state, payload) {
+          state.user = payload.user;
+        }
     },
 
     actions: {
@@ -42,10 +49,30 @@ export default {
         },
 
         async logout(context) {
-            await api.post(apiConst.logout);
+            await authApi.post(apiConst.logout);
             context.commit("SET_ACCESS_TOKEN", {
                 accessToken: "",
             });
         },
+
+        async user(context) {
+          let res = await authApi.get(apiConst.user);
+
+          if (res && res.status === 200) {
+            context.commit("SET_USER", {
+                user: res.data,
+            });
+
+            return {
+                status: res.status,
+                data: res.data,
+            };
+        } else {
+            return {
+                status: res.response.status,
+                data: res.response.data,
+            };
+        }
+        }
     },
 };

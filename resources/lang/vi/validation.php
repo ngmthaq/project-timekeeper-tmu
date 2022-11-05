@@ -162,5 +162,7 @@ return [
         'title'                 => 'tiêu đề',
         'username'              => 'tên đăng nhập',
         'year'                  => 'năm',
+        'reason'                => 'lý do',
+        'shifts'                => 'ca nghỉ',
     ],
 ];

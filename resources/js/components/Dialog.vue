@@ -1,6 +1,6 @@
 <template>
     <div class="text-center">
-        <v-dialog width="500" v-model="isOpenDialog">
+        <v-dialog width="540" v-model="isOpenDialog">
             <template v-slot:activator="{ on, attrs }">
                 <v-btn v-bind="attrs" v-on="on">
                     <v-icon large color="green darken-2">
@@ -14,7 +14,7 @@
                     {{ title }}
                 </v-card-title>
 
-                <div style="display: flex; flex-direction: column; padding: 10px;">
+                <form @submit.prevent="submitAdd" id="dayOffForm" style="display: flex; flex-direction: column; padding: 10px;">
                     <p>Ca nghỉ *</p>
                     <select id="shift" v-model="shift">
                         <option value="0">-- Chọn ca --</option>
@@ -22,19 +22,25 @@
                         <option value="2">Ca chiều</option>
                         <option value="3">Cả ngày</option>
                     </select>
+                    <span class="error-msg"> {{ errors.shifts }} </span>
+
                     <p>Ngày nghỉ phép *</p>
                     <input type="date" id="date_reason" v-model="now">
+                    <span class="error-msg"> {{ errors.date }} </span>
+
                     <p>Lý do nghỉ phép *</p>
                     <textarea id="reason" name="reason" rows="2" cols="50" v-model="reason"></textarea>
+                    <span class="error-msg"> {{ errors.reason }} </span>
+
                     <p :class="[isOpenMes ? 'openNoti' : 'notification']">Hãy nhập hết trường</p>
-                </div>
+                </form>
 
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn @click="submitAdd">
+                    <v-btn type="submit" form="dayOffForm">
                         Thêm
                     </v-btn>
-                    <v-btn @click="isOpenDialog = false">
+                    <v-btn @click="isOpenDialog = false" type="button">
                         Hủy bỏ
                     </v-btn>
                 </v-card-actions>
@@ -59,17 +65,48 @@ export default {
             isOpenMes: false,
             timeout: null,
             isOpenDialog: false,
+            errors: {
+                shifts: "",
+                date: "",
+                reason: ""
+            },
         }
     },
+
     methods: {
-        submitAdd() {
+        async submitAdd() {
+            this.errors = {
+                shifts: "",
+                date: "",
+                reason: ""
+            }
             if (this.shift == 0 || this.reason.length == 0) {
                 this.isOpenMes = true;
                 this.timeout = setTimeout(() => this.isOpenMes = false, 3000);
             } else {
                 //TODO thêm đơn nghỉ phép vào backend và validate
-                console.log(this.now, this.shift, this.reason);
-                this.isOpenDialog = false;
+                let res = await this.$store.dispatch("dayoff/createDayOff", {
+                    'shifts': this.shift,
+                    'date': this.now,
+                    'reason': this.reason,
+                });
+
+                if (res) {
+                    if (res.status === 422) {
+                        if (res.data.errors.date) {
+                            this.errors.date = res?.data?.errors?.date[0];
+                        }
+                        if (res.data.errors.shifts) {
+                            this.errors.shifts = res?.data?.errors?.shifts[0];
+                        }
+                        if (res.data.errors.reason) {
+                            this.errors.shifts = res?.data?.errors?.reason[0];
+                        }
+                    } else if (res.status === 500) {
+                        alert("Đã xảy ra lỗi");
+                        this.isOpenDialog = false;
+                    }
+                }
             }
 
         }
@@ -121,5 +158,10 @@ export default {
 .openNoti {
     color: red;
     display: block;
+}
+
+.error-msg {
+    font-size: 12px;
+    color: red;
 }
 </style>

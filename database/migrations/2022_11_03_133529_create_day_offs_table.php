@@ -19,6 +19,7 @@ class CreateDayOffsTable extends Migration
             $table->enum("shifts", [1, 2, 3]); // 1: ca sáng, 2: ca chiều, 3: cả ngày
             $table->date("date");
             $table->enum("status", [0, 1, 2])->default(0); // 0: đang đợi duyệt, 1: chấp nhận, 2: từ chối
+            $table->text("reason");
             $table->timestamps();
         });
     }

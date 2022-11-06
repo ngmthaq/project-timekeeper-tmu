@@ -17,11 +17,15 @@ class ManagerDayOffControler extends Controller
         try {
 
             $userId = Auth::user()->id;
+            $year = $request->query('year');
+            $month = $request->query('month');
 
             $res = DB::table('day_offs')
                 ->where('user_id', '!=', $userId)
                 ->join('users', 'users.id', '=', 'day_offs.user_id')
                 ->select('users.name', 'day_offs.*')
+                ->whereMonth('date', $month)
+                ->whereYear('date', $year)
                 ->get();
 
             return response()->json([

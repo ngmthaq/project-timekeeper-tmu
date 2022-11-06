@@ -2,7 +2,7 @@
   <auth-layout>
     <div class="header">
       <h2>Bảng chấm công</h2>
-      <p>Số ngày công: 11/21</p>
+      <p>Số ngày công: {{ actualWorkdays }}/{{ workingDays }}</p>
     </div>
     <calendar
       :data="calendarData"
@@ -24,6 +24,8 @@ export default {
   data() {
     return {
       calendarData: [],
+      workingDays: 0,
+      actualWorkdays: 0,
     };
   },
 
@@ -35,9 +37,12 @@ export default {
       });
 
       if (res.status === 200) {
-        this.calendarData = res.data.map((date) => ({
+        this.workingDays = res.data.workingDays;
+        this.actualWorkdays = res.data.actualWorkdays;
+        this.calendarData = res.data.data.map((date) => ({
           ...date,
           date: moment(date.date).format("DD/MM/YYYY"),
+          dayOffs: Object.values(date.dayOffs),
         }));
       } else {
         alert("Đã xảy ra lỗi");

@@ -15,3 +15,12 @@ export const convertLeaveShift = (value) => {
 
     return arrayShift[parseInt(value) - 1];
 }
+
+export const convertLeaveShiftLowerCase = (value) => {
+  if (!value) {
+      return "";
+  }
+  let arrayShift = ["ca sáng", "ca chiều", "cả ngày"];
+
+  return arrayShift[parseInt(value) - 1];
+}

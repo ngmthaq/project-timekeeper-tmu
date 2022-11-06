@@ -25,6 +25,7 @@
           'disable-day':
             d.day.isBefore(startOfMonth) || d.day.isAfter(endOfMonth),
         }"
+        :title="d.note"
       >
         <div
           class="day"
@@ -47,7 +48,6 @@
         >
           {{ d.checkout || "&nbsp;" }}
         </div>
-        <!-- <div class="note">{{ d.note || "&nbsp;" }}</div> -->
       </div>
     </div>
   </div>
@@ -97,7 +97,17 @@ export default {
 
           if (i > -1) {
             let data = this.data[i];
-            day = { day: day, ...data };
+            let note = data.dayOffs
+              .map(
+                (d) =>
+                  "Xin nghỉ " +
+                  this.$options.filters.convertLeaveShiftLowerCase(d.shifts) +
+                  " với lý do: " +
+                  d.reason
+              )
+              .join("\n");
+
+            day = { day: day, note: note, ...data };
           } else {
             day = { day: day, checkin: "", checkout: "", note: "" };
           }

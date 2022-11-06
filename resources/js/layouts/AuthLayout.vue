@@ -16,7 +16,7 @@
           <button class="checkout" @click="checkout">Checkout</button>
         </div>
         <div class="user">
-          <p class="name">{{ user?.name ?? "" }}</p>
+          <p class="name">{{ user.name || "" }}</p>
           <button @click="logout" class="logout">
             <v-icon>mdi-logout-variant</v-icon>
           </button>

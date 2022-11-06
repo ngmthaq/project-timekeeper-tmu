@@ -23,6 +23,9 @@ class DayOffManager extends ApiRequest
      */
     public function rules()
     {
-        return [];
+        return [
+            'year' => 'required|date_format:Y',
+            'month' => 'required|date_format:m',
+        ];
     }
 }

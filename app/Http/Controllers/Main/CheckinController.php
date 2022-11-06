@@ -68,7 +68,14 @@ class CheckinController extends Controller
             ->whereYear('date', $year)
             ->get();
 
-        $records = $records->map(function ($record) {
+        $dayOffs = DB::table('day_offs')
+            ->where('user_id', $request->user()->id)
+            ->where('status', "1")
+            ->whereMonth('date', $month)
+            ->whereYear('date', $year)
+            ->get();
+
+        $records = $records->map(function ($record) use ($dayOffs) {
             if (strtotime($record->checkin) > strtotime($this->checkinTime)) {
                 $record->checkinColor = $this->errorColor;
             } else {
@@ -86,9 +93,52 @@ class CheckinController extends Controller
                 $record->checkout = "";
             }
 
+            $record->dayOffs = $dayOffs->filter(function ($day) use ($record) {
+                return $record->date === $day->date;
+            });
+
             return $record;
         });
 
-        return response()->json($records);
+        $response = collect([
+            "data" => $records,
+            "workingDays" => $this->getWorkingDays($year, $month, [0, 6]),
+            "actualWorkdays" =>  $this->getActualWorkdays($records, $dayOffs)
+        ]);
+
+        return response()->json($response);
+    }
+
+    public function getWorkingDays($year, $month, $ignore)
+    {
+        $count = 0;
+        $counter = mktime(0, 0, 0, $month, 1, $year);
+        while (date("n", $counter) == $month) {
+            if (in_array(date("w", $counter), $ignore) == false) {
+                $count++;
+            }
+            $counter = strtotime("+1 day", $counter);
+        }
+
+        return $count;
+    }
+
+    public function getActualWorkdays($workDayData)
+    {
+        $response = $workDayData->map(function ($day) {
+            $point = 1;
+
+            if (strtotime($day->checkin) > strtotime($this->checkinTime)) {
+                $point = $point - 0.5;
+            }
+
+            if ($day->checkout && strtotime($day->checkout) < strtotime($this->checkoutTime)) {
+                $point = $point - 0.5;
+            }
+
+            return $point;
+        })->toArray();
+
+        return array_sum($response);
     }
 }

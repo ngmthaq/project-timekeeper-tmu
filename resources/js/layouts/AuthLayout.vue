@@ -2,15 +2,12 @@
   <div class="auth-layout">
     <aside class="auth-sidebar">
       <div class="logo">TIMEKEEPER</div>
-      <router-link
-        class="nav-link"
-        :class="[$route.path === path.path ? 'nav-link-active' : '']"
-        v-for="(path, index) in paths"
-        :key="index"
-        :to="path.path"
-      >
-        {{ path.name }}
-      </router-link>
+      <div v-for="(path, index) in paths" :key="index">
+        <router-link class="nav-link" :class="[$route.path === path.path ? 'nav-link-active' : '']" :to="path.path"
+          v-if="path.path === '/manage/day/off' && isAdmin || path.path !== '/manage/day/off'">
+          {{ path.name }}
+        </router-link>
+      </div>
     </aside>
     <div class="auth-main">
       <nav class="navbar">
@@ -19,7 +16,7 @@
           <button class="checkout" @click="checkout">Checkout</button>
         </div>
         <div class="user">
-          <p class="name">{{ user }}</p>
+          <p class="name">{{ user?.name ?? "" }}</p>
           <button @click="logout" class="logout">
             <v-icon>mdi-logout-variant</v-icon>
           </button>
@@ -44,14 +41,21 @@ export default {
   data() {
     return {
       paths: paths,
-      user: "",
+      user: {},
     };
+  },
+
+  computed: {
+    isAdmin() {
+      return this.user && this.user.role == 1 ? true : false
+    }
   },
 
   methods: {
     async logout() {
       await this.$store.dispatch("auth/logout");
       this.$router.push({ name: "Login" });
+      location.reload();
     },
 
     async checkin() {
@@ -87,13 +91,13 @@ export default {
     if (!localStorage.getItem(localStorageData.key.auth)) {
       this.$router.push({ name: "Login" });
     } else {
-      let name = this.$store.state.auth?.user?.name;
-      if (name) {
-        this.user = name;
+      let user = this.$store.state.auth?.user;
+      if (user) {
+        this.user = user;
       } else {
         let res = await this.$store.dispatch("auth/user");
         if (res.status === 200) {
-          this.user = res.data.name;
+          this.user = res.data;
         } else {
           alert("Có lỗi đã xảy ra vui lòng đăng nhập lại");
           localStorage.removeItem(localStorageData.key.auth);

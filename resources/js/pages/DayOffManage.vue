@@ -2,6 +2,7 @@
   <auth-layout>
     <v-sheet class="box_title">
       <h3>Danh sách nhân viên đăng ký nghỉ phép</h3>
+      <input type="month" id="selectMonth" v-model="monthYear" class="selectMonth" @change="getData">
     </v-sheet>
     <v-sheet class="box_body">
       <v-data-table :headers="headers" :items="desserts" lang="vi" :items-per-page="10" class="elevation-1">
@@ -82,6 +83,7 @@ export default {
       ],
       desserts: [],
       id: "",
+      monthYear: new Date().toISOString().slice(0, 7),
     };
   },
 
@@ -96,7 +98,10 @@ export default {
 
   methods: {
     async getData() {
-      let res = await this.$store.dispatch("dayoffManager/getManagerDayOff");
+      let res = await this.$store.dispatch("dayoffManager/getManagerDayOff", {
+        'month': this.monthYear.slice(5, 7),
+        'year': this.monthYear.slice(0, 4),
+      });
       if (res && res.status === 200) {
         this.desserts = res.data.response.map((item) => ({
           ...item,
@@ -141,5 +146,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.box_title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 
+  & .selectMonth {
+      margin-right: 20px;
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 4px;
+      box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+      font-size: 15px;
+    }
+  }
 </style>

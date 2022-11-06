@@ -8,7 +8,6 @@ export const convertLeaveStatus = (value) => {
 }
 
 export const convertLeaveShift = (value) => {
-    console.log(value)
     if (!value) {
         return "";
     }

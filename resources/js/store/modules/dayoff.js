@@ -19,7 +19,7 @@ export default {
            let res = await authApi.post(apiConst.dayoff, payload);
 
            if (res && res.status === 200) {
-               // location.reload();
+               location.reload();
            } else {
                return {
                    status: res.response.status,

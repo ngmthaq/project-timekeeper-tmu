@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Main\CheckinController;
 use App\Http\Controllers\Main\LeaveController;
+use App\Http\Controllers\Main\ManagerDayOffControler;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,4 +28,6 @@ Route::middleware("auth:sanctum")->name("api.")->group(function () {
     Route::get('checkin/get', [CheckinController::class, 'getData'])->name('getCheckinData');
     Route::post("day/off", [LeaveController::class, "handleDayOff"])->name("handleDayOff");
     Route::get("day/off/get", [LeaveController::class, "getDayOff"])->name("getDayOff");
+    Route::get("manager/day/off/get", [ManagerDayOffControler::class, "getManagerDayOff"])->name("getManagerDayOff");
+    Route::post("manager/day/off/update", [ManagerDayOffControler::class, "updateManagerDayOff"])->name("updateManagerDayOff");
 });

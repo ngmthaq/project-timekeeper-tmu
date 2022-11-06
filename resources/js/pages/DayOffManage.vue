@@ -11,7 +11,7 @@
             <v-dialog width="500" v-model="isOpenRefuse">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn v-bind="attrs" v-on="on" @click="id = item.id">
-                  <v-icon large color="green darken-2">
+                  <v-icon color="red darken-2">
                     mdi-close
                   </v-icon>
                 </v-btn>
@@ -34,7 +34,7 @@
             <v-dialog width="500" v-model="isOpenAccept">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn v-bind="attrs" v-on="on" @click="id = item.id">
-                  <v-icon large color="green darken-2">
+                  <v-icon color="green darken-2">
                     mdi-check
                   </v-icon>
                 </v-btn>

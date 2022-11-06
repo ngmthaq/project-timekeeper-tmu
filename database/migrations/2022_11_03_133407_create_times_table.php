@@ -17,7 +17,7 @@ class CreateTimesTable extends Migration
             $table->id();
             $table->foreignId("user_id");
             $table->time("checkin");
-            $table->time("checkout");
+            $table->time("checkout")->nullable();
             $table->date("date");
             $table->timestamps();
         });

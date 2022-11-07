@@ -19,7 +19,7 @@ class CheckinController extends Controller
         $time = new Time();
         $date = date("Y-m-d");
         $checkin = date("H:i:s");
-        $record = $time->where("date", $date)->first();
+        $record = $time->where("date", $date)->where("user_id", $request->user()->id)->first();
 
         if ($record) {
             return response()->json(["message" => "Bạn đã checkin ngày hôm "], 422);
@@ -39,7 +39,7 @@ class CheckinController extends Controller
         $time = new Time();
         $date = date("Y-m-d");
         $checkout = date("H:i:s");
-        $record = $time->where("date", $date)->first();
+        $record = $time->where("date", $date)->where("user_id", $request->user()->id)->first();
         if ($record) {
             if ($record->checkout) {
                 return response()->json(["message" => "Bạn đã checkout ngày hôm nay"], 422);
